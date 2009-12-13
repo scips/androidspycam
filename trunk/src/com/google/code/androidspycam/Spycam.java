@@ -1,6 +1,7 @@
 package com.google.code.androidspycam;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 public class Spycam extends Activity {
 	
@@ -83,7 +85,7 @@ public class Spycam extends Activity {
 		Intent intent=new Intent("org.openintents.action.SHOW_ABOUT_DIALOG");
 
 		//Supply the image name and package.
-		//intent.putExtra("org.openintents.extra.ICON_RESOURCE", getResources().getResourceName(R.drawable.logo_192));
+		intent.putExtra("org.openintents.extra.ICON_RESOURCE", getResources().getResourceName(R.drawable.icon));
 		intent.putExtra("org.openintents.extra.PACKAGE_NAME", getPackageName());
 		
 		intent.putExtra("org.openintents.extra.APPLICATION_LABEL", getString(R.string.app_name));
@@ -111,6 +113,15 @@ public class Spycam extends Activity {
 				.getResourceName(R.raw.license_short));
 		//intent.putExtra(AboutIntents.EXTRA_WRAP_LICENSE, false);
 		
-		startActivityForResult(intent, 0);
+		try{
+			startActivityForResult(intent, 0);
+		}catch(ActivityNotFoundException e){
+			try{
+				Toast.makeText(this, getString(R.string.about_backup), Toast.LENGTH_LONG).show();
+				startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.link_about_dialog))));
+			}catch(ActivityNotFoundException e2){
+				Toast.makeText(this, getString(R.string.market_backup), Toast.LENGTH_LONG).show();
+			}
+		}
 	}
 }
