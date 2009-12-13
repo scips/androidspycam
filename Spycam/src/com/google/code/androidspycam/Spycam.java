@@ -5,10 +5,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
+import android.content.res.Configuration;
+
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -24,6 +27,7 @@ import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -73,13 +77,14 @@ public class Spycam extends Activity implements OnClickListener, OnGesturePerfor
 	private Button zoomOutButton;
 
     private GestureLibrary mLibrary;
+
+	private int inputMode;
     
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
@@ -89,6 +94,8 @@ public class Spycam extends Activity implements OnClickListener, OnGesturePerfor
         imageFetchThread.start();
         orientationThread.start();
         
+       SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+       inputMode = prefs.getInt(Constants.prefInputMode, 0);
         leftButton = (Button) findViewById(R.id.b_left);
         rightButton = (Button) findViewById(R.id.b_right);
         upButton = (Button) findViewById(R.id.b_up);
@@ -137,6 +144,7 @@ public class Spycam extends Activity implements OnClickListener, OnGesturePerfor
 
 		return true;
 	}
+	
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
 	 */
@@ -156,6 +164,11 @@ public class Spycam extends Activity implements OnClickListener, OnGesturePerfor
 		        startActivityForResult(launchPreferencesIntent, REQUEST_CODE_PREFERENCES);
 				return true;
 			}
+			case R.id.menu_set_mode: {
+				setMode();
+				return true;
+			}
+			
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -318,6 +331,22 @@ public class Spycam extends Activity implements OnClickListener, OnGesturePerfor
 			}
 		}
 	}
+	
+	private void setMode() {
+		// Query what the orientation currently really is.
+		switch (getRequestedOrientation()) {
+		case Configuration.ORIENTATION_PORTRAIT:
+		    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+			break;
+		case Configuration.ORIENTATION_LANDSCAPE:
+		    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+			break;
+		default:
+		    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+			break;
+		}
+	}
+
 
 	private void enableOrientationSensors(){
 		sensorManager.registerListener(spycamSensorEventListener, sensor, SensorManager.SENSOR_DELAY_NORMAL);	

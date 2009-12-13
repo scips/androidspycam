@@ -7,5 +7,7 @@
           android:title="@string/menu_share" />
     <item android:id="@+id/menu_about"
           android:title="@string/menu_about" />
+    <item android:id="@+id/menu_set_mode"
+          android:title="@string/menu_set_mode" />
 
 </menu>
