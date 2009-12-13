@@ -39,6 +39,11 @@ public class Spycam extends Activity implements OnClickListener, OnGesturePerfor
 	
     public static final boolean DEBUG = false;	
     
+    private static final int MOVE_LEFT = 1;
+    private static final int MOVE_RIGHT = 2;
+    private static final int MOVE_UP = 3;
+    private static final int MOVE_DOWN = 4;
+    
     private SensorManager sensorManager;
     private Sensor sensor;
     private SpycamSensorEventListener spycamSensorEventListener;
@@ -183,27 +188,55 @@ public class Spycam extends Activity implements OnClickListener, OnGesturePerfor
 	}
 
 	private void down() {
-		// TODO Auto-generated method stub
-		Toast.makeText(this, "down", Toast.LENGTH_SHORT).show();
-		
+		move(MOVE_DOWN);
 	}
 
 	private void up() {
-		// TODO Auto-generated method stub
-		Toast.makeText(this, "up", Toast.LENGTH_SHORT).show();
-		
+		move(MOVE_UP);
 	}
 
 	private void right() {
-		// TODO Auto-generated method stub
-		Toast.makeText(this, "right", Toast.LENGTH_SHORT).show();
-		
+		move(MOVE_RIGHT);
 	}
 
 	private void left() {
-		// TODO Auto-generated method stub
-		Toast.makeText(this, "left", Toast.LENGTH_SHORT).show();
+		move(MOVE_LEFT);
+	}
+	
+	private void move(int direction) {
+		URL url;
+		String options = null;
 		
+		switch(direction) {
+			case MOVE_LEFT: 
+				options = "move=left";
+				break;
+			case MOVE_RIGHT:
+				options = "move=right";
+				break;
+			case MOVE_UP: 
+				options = "move=up";
+				break;
+			case MOVE_DOWN:
+				options = "move=down";
+				break;
+				
+		}
+		
+		// TODO move getContent in a Thread
+		try {
+			if(options != null) {
+				url = new URL("http://192.168.100.116/axis-cgi/com/ptz.cgi?"+options);
+				Object content = url.getContent();
+			}
+			
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private void showAboutDialog() {
