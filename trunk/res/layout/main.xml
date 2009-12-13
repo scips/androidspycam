@@ -16,11 +16,13 @@
     android:id="@+id/image"
 	android:src="@drawable/icon"
     android:layout_width="fill_parent" 
-    android:layout_height="fill_parent" />
+    android:layout_height="fill_parent"
+    android:layout_weight="1.0" />
 <LinearLayout
     android:orientation="horizontal"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="fill_parent"
+    android:layout_weight="1.0">
     <Button
     	android:id="@+id/b_left"
     	android:text="left"
@@ -32,13 +34,13 @@
     	android:layout_width="wrap_content"
     	android:layout_height="wrap_content" />
     <Button
-    	android:id="@+id/b_top"
-    	android:text="top"
+    	android:id="@+id/b_up"
+    	android:text="up"
     	android:layout_width="wrap_content"
     	android:layout_height="wrap_content" />
     <Button
-    	android:id="@+id/b_bottom"
-    	android:text="bottom"
+    	android:id="@+id/b_down"
+    	android:text="down"
     	android:layout_width="wrap_content"
     	android:layout_height="wrap_content" />
 </LinearLayout>
