@@ -1,20 +1,31 @@
 package com.google.code.androidspycam;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.gesture.Gesture;
+import android.gesture.GestureLibraries;
+import android.gesture.GestureLibrary;
+import android.gesture.GestureOverlayView;
+import android.gesture.Prediction;
+import android.gesture.GestureOverlayView.OnGesturePerformedListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.Toast;
 
-public class Spycam extends Activity {
+public class Spycam extends Activity implements OnClickListener, OnGesturePerformedListener {
 	
     public static final boolean DEBUG = false;
 
@@ -26,11 +37,36 @@ public class Spycam extends Activity {
 
 	public static final String TAG = "spycam";
 	
+	private Button leftButton;
+	private Button rightButton;
+	private Button upButton;
+	private Button downButton;
+
+    private GestureLibrary mLibrary;
+    
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        
+        leftButton = (Button) findViewById(R.id.b_left);
+        rightButton = (Button) findViewById(R.id.b_right);
+        upButton = (Button) findViewById(R.id.b_up);
+        downButton = (Button) findViewById(R.id.b_down);
+        
+        leftButton.setOnClickListener(this);
+        rightButton.setOnClickListener(this);
+        upButton.setOnClickListener(this);
+        downButton.setOnClickListener(this);
+
+        mLibrary = GestureLibraries.fromRawResource(this, R.raw.gestures);
+        if (!mLibrary.load()) {
+        	finish();
+        }
+        
+        GestureOverlayView gestures = (GestureOverlayView) findViewById(R.id.gestures);
+        gestures.addOnGesturePerformedListener(this);
     }
 	
 	/* (non-Javadoc)
@@ -79,6 +115,76 @@ public class Spycam extends Activity {
 			}
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	public void onClick(View v) {
+		if(leftButton.equals(v)){
+			left();
+		}else if(rightButton.equals(v)){
+			right();
+		}else if(upButton.equals(v)){
+			up();
+		}else if(downButton.equals(v)){
+			down();
+		}else{
+			throw new IllegalArgumentException("What was clicked?");
+		}
+	}
+
+	public void onGesturePerformed(GestureOverlayView overlay, Gesture gesture) {
+		ArrayList<Prediction> predictions = mLibrary.recognize(gesture);
+
+		// We want at least one prediction
+		if (predictions.size() > 0) {
+			Prediction prediction = predictions.get(0);
+			//Toast.makeText(this, "pred: "+prediction.score, Toast.LENGTH_SHORT).show();
+			// We want at least some confidence in the result
+			if (prediction.score > 1.0) {
+				if(prediction.name.equals("left")){
+					left();
+				}else if(prediction.name.equals("right")){
+					right();
+				}else if(prediction.name.equals("up")){
+					up();
+				}else if(prediction.name.equals("down")){
+					down();
+				}else if(prediction.name.equals("rotate360")){
+					rotate360();
+				}else{
+					throw new IllegalArgumentException("What was gestured?");
+				}
+			}
+		}
+	}
+
+	private void rotate360() {
+		// TODO Auto-generated method stub
+		Toast.makeText(this, "rotate 360", Toast.LENGTH_SHORT).show();
+		
+	}
+
+	private void down() {
+		// TODO Auto-generated method stub
+		Toast.makeText(this, "down", Toast.LENGTH_SHORT).show();
+		
+	}
+
+	private void up() {
+		// TODO Auto-generated method stub
+		Toast.makeText(this, "up", Toast.LENGTH_SHORT).show();
+		
+	}
+
+	private void right() {
+		// TODO Auto-generated method stub
+		Toast.makeText(this, "right", Toast.LENGTH_SHORT).show();
+		
+	}
+
+	private void left() {
+		// TODO Auto-generated method stub
+		Toast.makeText(this, "left", Toast.LENGTH_SHORT).show();
+		
 	}
 
 	private void showAboutDialog() {
