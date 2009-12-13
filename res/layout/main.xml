@@ -6,11 +6,13 @@
 <TextView  
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content" 
-    android:text="@string/hello"/>
+    android:text="@string/hello"
+    android:layout_weight="1.0"/>
 <android.gesture.GestureOverlayView
     android:id="@+id/gestures"
     android:layout_width="fill_parent" 
-    android:layout_height="fill_parent"
+    android:layout_height="wrap_content"
+	android:layout_weight="0"
     
     android:gestureStrokeType="multiple"
     android:eventsInterceptionEnabled="true"
@@ -19,14 +21,14 @@
 	    android:id="@+id/image"
 		android:src="@drawable/icon"
 	    android:layout_width="fill_parent" 
-	    android:layout_height="fill_parent"
-	    android:layout_weight="1.0" />
+	    android:layout_height="fill_parent" />
 </android.gesture.GestureOverlayView>
 <LinearLayout
     android:orientation="horizontal"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:layout_weight="1.0">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_weight="1.0"
+    android:layout_gravity="center_vertical">
     <Button
     	android:id="@+id/b_left"
     	android:text="left"
