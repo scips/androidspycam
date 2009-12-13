@@ -68,6 +68,7 @@ public class Spycam extends Activity implements OnClickListener, OnGesturePerfor
 	private Button rightButton;
 	private Button upButton;
 	private Button downButton;
+	private ImageView imageView;
 	private Button zoomInButton;
 	private Button zoomOutButton;
 
@@ -99,6 +100,9 @@ public class Spycam extends Activity implements OnClickListener, OnGesturePerfor
         rightButton.setOnClickListener(this);
         upButton.setOnClickListener(this);
         downButton.setOnClickListener(this);
+        
+        imageView = (ImageView)findViewById(R.id.image);
+
         zoomInButton.setOnClickListener(this);
         zoomOutButton.setOnClickListener(this);
 
@@ -350,7 +354,7 @@ public class Spycam extends Activity implements OnClickListener, OnGesturePerfor
 	
 	protected Handler handler = new Handler(){
 		public void handleMessage(android.os.Message msg) {
-			((ImageView)findViewById(R.id.image)).setImageDrawable(drawable);
+			imageView.setImageDrawable(drawable);
 		};
 	};
 	

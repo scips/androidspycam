@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
-  xmlns:android="http://schemas.android.com/apk/res/android">
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+            android:title="bla">
+        <CheckBoxPreference
+                android:key="cp_integrates"
+                android:title="vla"
+                android:summary="vla"
+                android:defaultValue="false"/>
+    </PreferenceCategory>
+    <PreferenceCategory
+            android:title="@string/app_name">
+
+        <CheckBoxPreference
+                android:key="cp_notifications"
+                android:title="vla"
+                android:summary="vla"
+                android:defaultValue="true" />
+
+    </PreferenceCategory>
 </PreferenceScreen>
