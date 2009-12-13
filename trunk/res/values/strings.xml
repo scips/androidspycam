@@ -13,7 +13,8 @@
 	
     <string name="menu_about">About Spycam</string>
     <string name="menu_preferences">Preferences</string>
-    
+    <string name="menu_share">Share</string>
+	
     <string name="PreferenceActivity">Preferences</string>
     
 </resources>
