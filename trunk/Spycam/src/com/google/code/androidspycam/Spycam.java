@@ -46,9 +46,12 @@ public class Spycam extends Activity implements OnClickListener, OnGesturePerfor
     private static final int MOVE_RIGHT = 2;
     private static final int MOVE_UP = 3;
     private static final int MOVE_DOWN = 4;
+    private static final int MOVE_ZOOM_IN = 5;
+    private static final int MOVE_ZOOM_OUT = 6;
     
     private int prefAngleH = 20;
     private int prefAngleV = 5;
+    private int prefZoom = 500;
     
     private SensorManager sensorManager;
     private Sensor sensor;
@@ -65,6 +68,8 @@ public class Spycam extends Activity implements OnClickListener, OnGesturePerfor
 	private Button rightButton;
 	private Button upButton;
 	private Button downButton;
+	private Button zoomInButton;
+	private Button zoomOutButton;
 
     private GestureLibrary mLibrary;
     
@@ -87,11 +92,15 @@ public class Spycam extends Activity implements OnClickListener, OnGesturePerfor
         rightButton = (Button) findViewById(R.id.b_right);
         upButton = (Button) findViewById(R.id.b_up);
         downButton = (Button) findViewById(R.id.b_down);
+        zoomInButton = (Button) findViewById(R.id.b_zoomIn);
+        zoomOutButton = (Button) findViewById(R.id.b_zoomOut);
         
         leftButton.setOnClickListener(this);
         rightButton.setOnClickListener(this);
         upButton.setOnClickListener(this);
         downButton.setOnClickListener(this);
+        zoomInButton.setOnClickListener(this);
+        zoomOutButton.setOnClickListener(this);
 
         mLibrary = GestureLibraries.fromRawResource(this, R.raw.gestures);
         if (!mLibrary.load()) {
@@ -156,6 +165,10 @@ public class Spycam extends Activity implements OnClickListener, OnGesturePerfor
 			up();
 		}else if(downButton.equals(v)){
 			down();
+		}else if(zoomInButton.equals(v)){
+			zoomIn();
+		}else if(zoomOutButton.equals(v)){
+			zoomOut();
 		}else{
 			throw new IllegalArgumentException("What was clicked?");
 		}
@@ -209,6 +222,14 @@ public class Spycam extends Activity implements OnClickListener, OnGesturePerfor
 		move(MOVE_LEFT);
 	}
 	
+	private void zoomIn() {
+		move(MOVE_ZOOM_IN);
+	}
+	
+	private void zoomOut() {
+		move(MOVE_ZOOM_OUT);
+	}
+	
 	private void move(int direction) {
 		URL url;
 		String options = null;
@@ -226,7 +247,12 @@ public class Spycam extends Activity implements OnClickListener, OnGesturePerfor
 			case MOVE_DOWN:
 				options = "rtilt=-"+prefAngleV;
 				break;
-				
+			case MOVE_ZOOM_IN:
+				options = "rzoom="+prefZoom;
+				break;
+			case MOVE_ZOOM_OUT:
+				options = "rzoom=-"+prefZoom;
+				break;
 		}
 		
 		// TODO move getContent in a Thread
