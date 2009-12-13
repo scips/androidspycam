@@ -7,6 +7,11 @@
 	<string name="about_copyright">Copyright © 2009 androidbxl android hackathon members</string>
 	<string name="about_website_label">Android Spycam google code page</string> 
 	<string name="about_website_url">http://code.google.com/p/androidspycam</string>
+	<string name="about_backup">To view information about this app you need to install OI About. See http://www.openintents.org/ or the Market.</string>
+	<string name="link_about_dialog">market://search?q=pname:org.openintents.about</string>
+	<string name="market_backup">You do not seem to have the Android Market app installed. Ignoring.</string>
+	
     <string name="menu_about">About Spycam</string>
     <string name="menu_preferences">Preferences</string>
+    
 </resources>
