@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="wrap_content" android:layout_height="wrap_content">
+
+	<LinearLayout android:layout_height="wrap_content" 
+		android:layout_width="fill_parent">
+
+		<!-- IP ADDRESS -->
+		<LinearLayout 
+			android:layout_height="wrap_content" 
+			android:layout_width="wrap_content"
+			android:layout_weight="1"
+			android:orientation="vertical">
+		
+			<TextView android:text="IP Address" 
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="right"
+				android:textSize="10px">
+			</TextView>
+			<EditText android:id="@+id/edit_ip"
+				android:layout_width="fill_parent" 
+				android:layout_height="wrap_content"
+				android:layout_gravity="right"
+				android:text="192.168.100.116">
+			</EditText>
+	
+		</LinearLayout>
+
+		<!-- IP PORT -->
+		<LinearLayout android:layout_height="wrap_content" 
+			android:layout_width="wrap_content"
+			android:layout_weight="1"
+			android:orientation="vertical">
+		
+			<TextView android:text="IP Port" 
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="right"
+				android:textSize="10px">
+			</TextView>
+			<EditText android:id="@+id/edit_port"
+				android:layout_height="wrap_content"			
+				android:layout_width="fill_parent" 
+				android:layout_gravity="right"
+				android:text="80">
+			</EditText>
+	
+		</LinearLayout>
+
+
+	</LinearLayout>
+
+
+</LinearLayout>
