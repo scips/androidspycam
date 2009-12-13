@@ -1,13 +1,21 @@
 package com.google.code.androidspycam;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
-
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.gesture.Gesture;
 import android.gesture.GestureLibraries;
 import android.gesture.GestureLibrary;
@@ -16,10 +24,12 @@ import android.gesture.Prediction;
 import android.gesture.GestureOverlayView.OnGesturePerformedListener;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -28,6 +38,13 @@ import android.widget.Toast;
 public class Spycam extends Activity implements OnClickListener, OnGesturePerformedListener {
 	
     public static final boolean DEBUG = false;	
+    
+    private SensorManager sensorManager;
+    private Sensor sensor;
+    private SpycamSensorEventListener spycamSensorEventListener;
+    private boolean isRunning = true;
+    private boolean isKilled = false;
+    private Drawable drawable;
 
 	public static final String TAG = "spycam";
 
@@ -45,6 +62,15 @@ public class Spycam extends Activity implements OnClickListener, OnGesturePerfor
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        
+        sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+        sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+        spycamSensorEventListener=new SpycamSensorEventListener();
+        
+        enableOrientationSensors();
+        imageFetchThread.start();
+        orientationThread.start();
         
         leftButton = (Button) findViewById(R.id.b_left);
         rightButton = (Button) findViewById(R.id.b_right);
@@ -223,4 +249,132 @@ public class Spycam extends Activity implements OnClickListener, OnGesturePerfor
 			}
 		}
 	}
+
+	private class SpycamSensorEventListener implements SensorEventListener{
+
+		private Float azimuth;
+		private Float pitch;
+		private Float roll;
+		
+		public void onAccuracyChanged(Sensor sensor, int accuracy) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		public void onSensorChanged(SensorEvent event) {
+			// TODO Auto-generated method stub
+			azimuth=event.values[0];
+			pitch=event.values[1];
+			roll=event.values[2];
+		}
+
+		public Float getAzimuth() {
+			return azimuth;
+		}
+
+		public Float getPitch() {
+			return pitch;
+		}
+
+		public Float getRoll() {
+			return roll;
+		}
+	}
+	
+	private void enableOrientationSensors(){
+		sensorManager.registerListener(spycamSensorEventListener, sensor, SensorManager.SENSOR_DELAY_NORMAL);	
+	}
+	
+	private void disableOrientationSensors(){
+		sensorManager.unregisterListener(spycamSensorEventListener);
+	}
+	
+	private Thread imageFetchThread = new Thread(){
+		@Override
+    	public void run() {
+    		while(!isKilled){
+    			if(isRunning){
+	    			try {
+						drawable = Util.fetchImage("http://192.168.100.116/axis-cgi/jpg/image.cgi");
+						handler.sendEmptyMessage(0);
+						Log.v(getClass().getName(),"imageFetchThread");
+					} catch (MalformedURLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} 
+    			}
+				try{
+					Thread.sleep(200);
+				}
+				catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+    		}
+    	}
+	};
+	
+	private Thread orientationThread = new Thread(){
+		public void run() {
+    		while(!isKilled){
+        		if(isRunning){
+        			Log.v(getClass().getName(),"orientationThread");
+        			URL url;
+					try {
+						if(spycamSensorEventListener.getAzimuth()!=null){
+							int multiplier=1;
+							url = new URL("http://192.168.100.116/axis-cgi/com/ptz.cgi?pan="+(-1 *Math.round(180-spycamSensorEventListener.getAzimuth()))+"&tilt="+(90-spycamSensorEventListener.getRoll())*2);
+							Object content = url.getContent();
+						}
+						
+					} catch (MalformedURLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} 
+        		}
+				
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+    		}
+    	};
+	};
+	
+	protected void onDestroy() {
+		disableOrientationSensors();
+		isRunning=false;
+		isKilled=true;
+		super.onDestroy();
+	};
+	
+	@Override
+	protected void onResume() {
+		isRunning=true;
+		enableOrientationSensors();
+		super.onResume();
+	}
+	
+	@Override
+	protected void onPause() {
+		isRunning=false;
+		disableOrientationSensors();
+		super.onPause();
+	}
+	
+	protected Handler handler = new Handler(){
+		public void handleMessage(android.os.Message msg) {
+			((ImageView)findViewById(R.id.image)).setImageDrawable(drawable);
+		};
+	};
+	
 }
