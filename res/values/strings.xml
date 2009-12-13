@@ -2,4 +2,11 @@
 <resources>
     <string name="hello">Hello World, Spycam!</string>
     <string name="app_name">Spycam</string>
+    
+    <string name="about_comments">Android app to view and control a spycam. </string>  
+	<string name="about_copyright">Copyright © 2009 androidbxl android hackathon members</string>
+	<string name="about_website_label">Android Spycam google code page</string> 
+	<string name="about_website_url">http://code.google.com/p/androidspycam</string>
+    <string name="menu_about">About Spycam</string>
+    <string name="menu_preferences">Preferences</string>
 </resources>
