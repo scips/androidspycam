@@ -47,6 +47,9 @@ public class Spycam extends Activity implements OnClickListener, OnGesturePerfor
     private static final int MOVE_UP = 3;
     private static final int MOVE_DOWN = 4;
     
+    private int prefAngleH = 20;
+    private int prefAngleV = 5;
+    
     private SensorManager sensorManager;
     private Sensor sensor;
     private SpycamSensorEventListener spycamSensorEventListener;
@@ -212,16 +215,16 @@ public class Spycam extends Activity implements OnClickListener, OnGesturePerfor
 		
 		switch(direction) {
 			case MOVE_LEFT: 
-				options = "move=left";
+				options = "rpan=-"+prefAngleH;
 				break;
 			case MOVE_RIGHT:
-				options = "move=right";
+				options = "rpan="+prefAngleH;
 				break;
 			case MOVE_UP: 
-				options = "move=up";
+				options = "rtilt="+prefAngleV;
 				break;
 			case MOVE_DOWN:
-				options = "move=down";
+				options = "rtilt=-"+prefAngleV;
 				break;
 				
 		}
