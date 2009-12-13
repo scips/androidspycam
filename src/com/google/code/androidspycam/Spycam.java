@@ -17,8 +17,8 @@ import android.gesture.GestureOverlayView.OnGesturePerformedListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,15 +27,11 @@ import android.widget.Toast;
 
 public class Spycam extends Activity implements OnClickListener, OnGesturePerformedListener {
 	
-    public static final boolean DEBUG = false;
-
-	/**
-	 * Menu item id's.
-	 */
-	public static final int MENU_ITEM_PREFS = Menu.FIRST;
-	public static final int MENU_ITEM_ABOUT = Menu.FIRST+1;
+    public static final boolean DEBUG = false;	
 
 	public static final String TAG = "spycam";
+
+	private static final int REQUEST_CODE_PREFERENCES = 1000;
 	
 	private Button leftButton;
 	private Button rightButton;
@@ -74,14 +70,11 @@ public class Spycam extends Activity implements OnClickListener, OnGesturePerfor
 	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
+		super.onCreateOptionsMenu(menu);		
+
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.menu, menu);
 		
-		//Show preferences action
-		menu.add(ContextMenu.NONE, MENU_ITEM_PREFS, ContextMenu.NONE, R.string.menu_preferences).setIcon(android.R.drawable.ic_menu_preferences);
-
-		//About action
-		menu.add(ContextMenu.NONE, MENU_ITEM_ABOUT, ContextMenu.NONE, R.string.menu_about).setIcon(android.R.drawable.ic_menu_info_details);
-
 		// Generate any additional actions that can be performed on the
 		// overall list. In a normal install, there are no additional
 		// actions found here, but this allows other applications to extend
@@ -100,18 +93,18 @@ public class Spycam extends Activity implements OnClickListener, OnGesturePerfor
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-			case MENU_ITEM_ABOUT: {
+			case R.id.menu_about: {
 				// Show the about dialog for this app.
 				showAboutDialog();
 				return true;
 			}
-			case MENU_ITEM_PREFS: {
-				/*// Show the preferences.
-		        Intent launchPreferencesIntent = new Intent().setClass(this, PreferencesActivity.class);
+			case R.id.menu_preferences: {
+				// Show the preferences.
+		        Intent launchPreferencesIntent = new Intent().setClass(this, PreferenceActivity.class);
 		        
 		        //Make it a subactivity so we know when it returns.
 		        startActivityForResult(launchPreferencesIntent, REQUEST_CODE_PREFERENCES);
-				return true;*/
+				return true;
 			}
 		}
 		return super.onOptionsItemSelected(item);
