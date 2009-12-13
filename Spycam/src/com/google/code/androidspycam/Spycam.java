@@ -36,6 +36,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.code.androidspycam.listeners.SpycamSensorEventListener;
@@ -44,7 +45,9 @@ import com.google.code.androidspycam.threads.OrientationThread;
 
 public class Spycam extends Activity implements OnClickListener, OnGesturePerformedListener {
 	
-    public static final boolean DEBUG = false;	
+    public static final boolean DEBUG = false;
+    
+	public static final String APP_NAME = "Spycam";	
     
     private static final int MOVE_LEFT = 1;
     private static final int MOVE_RIGHT = 2;
@@ -80,10 +83,22 @@ public class Spycam extends Activity implements OnClickListener, OnGesturePerfor
 
 	private int inputMode;
     
+    /**
+     * Preferences source.
+     */
+    static SharedPreferences settings;
+    
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        //Load the default preferences values. Should be done first at every entry into the app.
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+        
+        //Obtain a connection to the preferences.
+        settings=getSharedPreferences(PreferenceActivity.PREFS, MODE_PRIVATE);
+        
         setContentView(R.layout.main);
         
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
@@ -113,13 +128,18 @@ public class Spycam extends Activity implements OnClickListener, OnGesturePerfor
         zoomInButton.setOnClickListener(this);
         zoomOutButton.setOnClickListener(this);
 
-        mLibrary = GestureLibraries.fromRawResource(this, R.raw.gestures);
-        if (!mLibrary.load()) {
-        	finish();
-        }
+        if(settings.getBoolean("pref_inputmode", true)){//TODO: finish this
+        	mLibrary = GestureLibraries.fromRawResource(this, R.raw.gestures);
+        	if (!mLibrary.load()) {
+        		finish();
+        	}
         
-        GestureOverlayView gestures = (GestureOverlayView) findViewById(R.id.gestures);
-        gestures.addOnGesturePerformedListener(this);
+        	GestureOverlayView gestures = (GestureOverlayView) findViewById(R.id.gestures);
+        	gestures.addOnGesturePerformedListener(this);
+        }else{
+        	LinearLayout buttonsLinearLayout = (LinearLayout) findViewById(R.id.ll_buttons);
+        	buttonsLinearLayout.setVisibility(View.GONE);
+        }
     }
 	
 	/* (non-Javadoc)
@@ -292,7 +312,7 @@ public class Spycam extends Activity implements OnClickListener, OnGesturePerfor
 		Intent intent=new Intent("org.openintents.action.SHOW_ABOUT_DIALOG");
 
 		//Supply the image name and package.
-		intent.putExtra("org.openintents.extra.ICON_RESOURCE", getResources().getResourceName(R.drawable.icon));
+		intent.putExtra("org.openintents.extra.ICON_RESOURCE", getResources().getResourceName(R.drawable.camera));
 		intent.putExtra("org.openintents.extra.PACKAGE_NAME", getPackageName());
 		
 		intent.putExtra("org.openintents.extra.APPLICATION_LABEL", getString(R.string.app_name));
