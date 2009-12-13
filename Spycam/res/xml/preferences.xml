@@ -10,10 +10,10 @@
 </PreferenceCategory>
 
     <PreferenceCategory
-            android:title="@string/app_name">
+            android:title="Reverse">
 
         <CheckBoxPreference
-                androidefaultValue="true" android:title="Reverse"/>
+                androidefaultValue="true" android:title="Reverse" android:key="preferencesReverse"/>
 
     </PreferenceCategory>
 </PreferenceScreen>
